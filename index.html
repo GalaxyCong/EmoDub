@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title> EmoDubber Towards High Quality and Emotion Controllable Movie Dubbing </title>
+		<link type="text/css" href="./css/basic.css" rel="stylesheet">
+		<link type="text/css" href="./css/index.css" rel="stylesheet">
+		<link type="text/css" href="./css/bootstrap.min.css" rel="stylesheet">
+		<script type='text/javascript' src="./js/jquery-3.3.1.min.js"></script>
+		<script type='text/javascript' src="./js/index.js"></script>
+	</head>
+	<body>
+		<div class="main">
+			<div class="title">
+				<img class="top-img"  src="img/background.png" />
+				<span>EmoDubber Towards High Quality and Emotion Controllable Movie Dubbing</span>
+			</div>
+			<div class="content">
+				<div class="section author">
+				</div>
+				<div class="section">
+					<div class="section-title">ABSTRACT</div>
+					<div class="section-content abstract">
+						Given a piece of text, a video clip, and a reference audio, the movie dubbing task aims to generate speech that aligns with the video while cloning the desired voice. The existing methods have two primary deficiencies: (1) They struggle to simultaneously hold audio-visual sync and achieve clear pronunciation; (2) They lack the capacity to express user-defined emotions. To address these problems, we propose EmoDubber, an emotion-controllable dubbing architecture that allows users to specify emotion type and emotional intensity while satisfying high-quality lip sync and pronunciation. Specifically, we first design Lip-related Prosody Aligning (LPA), which focuses on learning the inherent consistency between lip motion and prosody variation by duration level contrastive learning to incorporate reasonable alignment. Then, we design Pronunciation Enhancing (PE) strategy to fuse the video-level phoneme sequences by efficient conformer to improve speech intelligibility. Next, the speaker identity adapting module aims to decode acoustics prior and inject the speaker style embedding. After that, the proposed Flow-based User Emotion Controlling (FUEC) is used to synthesize waveform by flow matching prediction network conditioned on acoustics prior. In this process, the FUEC determines the gradient direction and guidance scale based on the user's emotion instructions by the positive and negative guidance mechanism, which focuses on amplifying the desired emotion while suppressing others. Extensive experimental results on three benchmark datasets demonstrate favorable performance compared to several state-of-the-art methods. 
+						Project page with demo: <a href="https://galaxycong.github.io/EmoDub"><span  style="color: #1d5da4; ">https://galaxycong.github.io/EmoDub</span></a>.
+					</div>
+				</div>
+				
+				<div class="section">
+					<div class="section-title">MODEL ARCHITECTURE</div>
+					<div class="section-content model">
+						<img src="./img/model_fig_1.png" alt="" class="model-img">
+						
+						<p style="padding-top: 1rem; color: #a1a1a1; font-size: 1rem; text-align: center;">Figure 1: Architecture of the proposed EmoDubber, which consists of four main components: Lip-related Prosody Aligning (LPA) focuses on learning inherent consistency between lip motion and phoneme prosody by duration level contrastive learning; Pronunciation Enhancing (PE) fuses the output of LPA with expanding phoneme sequence by efficient conformer; Speaker Identity Adapting (SIA) aims to generate acoustics prior information μ while injecting speaker style; and Flow-based User Emotion Controlling (FUEC) renders user-specified emotion and intensity E in the flow-matching prediction process using positive and negative guidance. </p>
+					</div>
+				</div>
+				
+				<div class="section">
+					<div class="section-title">EXPERIMENTS</div>
+					<div class="section-content experiments">
+						<!-- We develop four neural TTS systems for a  -->
+						<strong>Current Dubbing Baselines:</strong>
+						</br> 1) <b>V2C-Net (CVPR'22)</b> is a Vanilla dubbing model used for V2C tasks, which aggregates the desired speaker and visual embedding to Mel-Decoder.
+						</br> 2) <b>HPMDubbing (CVPR'23)</b> is a Hierarchical dubbing to bridge fine-grained video representations and speech attributes from three levels. 
+						</br> 3) <b>Speaker2Dub (MM'24)</b>  is a SOTA pre-trained dubbing method with two-stage strategy to learn pronunciation from an additional TTS corpus. 
+						</br> 4) <b>StyleDubber (ACL'24)</b> is a SOTA Dubbing model using multi-scale style learning at the multi-modal phoneme level and acoustics utterance level.
+
+					</div>
+					<div class="section-content ">
+						<hr />
+						<div class="subsection-exp-2">
+							
+							<div>
+								
+							</div>
+							
+
+							<div class="module-content" style="margin-bottom: 30px;">
+
+								<!-- chem 1 -->
+								<table id="table_4">
+									<thead>
+										<colgroup>
+										   <col width=20%></col>
+										   <col width=20%></col>
+								
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   
+										</colgroup>
+										<tr>
+											<td colspan="7" style="text-align: center;">
+												<span style="font-weight: bold; font-size: 1.2em;" >Sample Chem (Full Video)</span> 
+								
+											</td>
+										</tr>	
+
+									<tbody>
+								
+
+									</tbody>
+									<tbody>
+										<tr>
+											<tr>
+												<td colspan="7" style="text-align: left;">
+													
+													<span style="color:rgb(146, 208, 80);">Text Content:</span> so when you mix these two, the reaction favors the products and forms a lot of ions.
+													
+												</td>										
+											</tr>
+
+											</tr>
+											<th colspan="1" style="text-align: center"><strong>Ground-Truth</strong></th>
+											<th colspan="1" style="text-align: center"><strong>FastSpeech2</strong></th>
+											<th colspan="1" style="text-align: center"><strong>Zero-shot TTS</strong></th>
+											<th colspan="1" style="text-align: center"><strong>HPMDubbing</strong></th>
+											<th colspan="1" style="text-align: center"><strong>Speaker2Dub</strong></th>
+											<th colspan="1" style="text-align: center"><strong>StyleDubber</strong></th>
+											<th colspan="1" style="text-align: center"><strong style="color: #1d5da4;">EmoDubber </strong></th>
+											</tr>
+									
+											<td style="align: center; vertical-align: middle;" ><video src="./video/video_Chem/Chem_4/GT.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_4/FS2.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_4/Zero-Shot.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_4/HPMDub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_4/Speaker2Dub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_4/StyleDubber.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_4/Ours.mp4" controls="" preload="" width="215"></video></td>
+
+										</tr>
+									</tbody>
+								
+								</table>
+								<!-- chem 2 -->
+								<table id="table_4">
+									<thead>
+										<colgroup>
+										   <col width=20%></col>
+										   <col width=20%></col>
+								
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   
+										</colgroup>
+										<tr>
+											<td colspan="7" style="text-align: center;">
+												<span style="font-weight: bold; font-size: 1.2em;" >Sample Chem (Full Video)</span> 
+								
+											</td>
+										</tr>	
+
+									<tbody>
+								
+
+									</tbody>
+									<tbody>
+										<tr>
+											<tr>
+												<td colspan="7" style="text-align: left;">
+													
+													<span style="color:rgb(146, 208, 80);">Text Content:</span> well let's just calculate from the ideal gas law.
+													
+												</td>										
+											</tr>
+
+											</tr>
+											<th colspan="1" style="text-align: center"><strong>Ground-Truth</strong></th>
+											<th colspan="1" style="text-align: center"><strong>FastSpeech2</strong></th>
+											<th colspan="1" style="text-align: center"><strong>Zero-shot TTS</strong></th>
+											<th colspan="1" style="text-align: center"><strong>HPMDubbing</strong></th>
+											<th colspan="1" style="text-align: center"><strong>Speaker2Dub</strong></th>
+											<th colspan="1" style="text-align: center"><strong>StyleDubber</strong></th>
+											<th colspan="1" style="text-align: center"><strong style="color: #1d5da4;">EmoDubber </strong></th>
+											</tr>
+									
+											<td style="align: center; vertical-align: middle;" ><video src="./video/video_Chem/Chem_3/GT.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_3/FS2.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_3/Zero-Shot.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_3/HPMDub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_3/Speaker2Dub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_3/StyleDubber.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_3/Ours.mp4" controls="" preload="" width="215"></video></td>
+
+										</tr>
+									</tbody>
+								
+								</table>
+
+								<!-- chem 3 -->
+								<table id="table_4">
+									<thead>
+										<colgroup>
+										   <col width=20%></col>
+										   <col width=20%></col>
+
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   
+										</colgroup>
+										<tr>
+											<td colspan="7" style="text-align: center;">
+												<span style="font-weight: bold; font-size: 1.2em;" >Sample Chem (Full Video)</span> 
+
+											</td>
+										</tr>	
+										<tr>
+											<td colspan="7" style="text-align: left;">
+												<span style="color:rgb(146, 208, 80);">Text Content:</span> i can do that from the number of moles, the temperature, and the size of the flask. <br>
+											</td>
+										</tr>	
+										</tr>
+										  <th colspan="1" style="text-align: center"><strong>Ground-Truth</strong></th>
+										  <th colspan="1" style="text-align: center"><strong>FastSpeech2</strong></th>
+										  <th colspan="1" style="text-align: center"><strong>Zero-shot TTS</strong></th>
+										  <th colspan="1" style="text-align: center"><strong>HPMDubbing</strong></th>
+										  <th colspan="1" style="text-align: center"><strong>Speaker2Dub</strong></th>
+										  <th colspan="1" style="text-align: center"><strong>StyleDubber</strong></th>
+										  <th colspan="1" style="text-align: center"><strong style="color: #1d5da4;">EmoDubber </strong></th>
+										</tr>
+									
+
+									</thead>
+									<tbody>
+
+										<tr>
+
+											<td style="align: center; vertical-align: middle;" ><video src="./video/video_Chem/Chem_1/GT.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_1/FS2.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_1/Zero-Shot.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_1/HPMDub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_1/Speaker2Dub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_1/StyleDubber.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_1/Ours.mp4" controls="" preload="" width="215"></video></td>
+
+										</tr>
+									</tbody>
+								
+								</table>
+								
+
+
+								<!-- chem 4 -->
+								<table id="table_4">
+									<thead>
+										<colgroup>
+										   <col width=20%></col>
+										   <col width=20%></col>
+								
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   
+										</colgroup>
+										<tr>
+											<td colspan="7" style="text-align: center;">
+												<span style="font-weight: bold; font-size: 1.2em;" >Sample Chem (Full Video)</span> 
+								
+											</td>
+										</tr>	
+
+									<tbody>
+								
+
+									</tbody>
+									<tbody>
+										<tr>
+											<!-- mgg27LTeNPo-058 -->
+											<tr>
+												<td colspan="7" style="text-align: left;">
+													
+													<span style="color:rgb(146, 208, 80);">Text Content:</span> so already we have a prediction from our quantum mechanical understanding of bonding. 
+													
+												</td>										
+											</tr>
+
+											</tr>
+											<th colspan="1" style="text-align: center"><strong>Ground-Truth</strong></th>
+											<th colspan="1" style="text-align: center"><strong>FastSpeech2</strong></th>
+											<th colspan="1" style="text-align: center"><strong>Zero-shot TTS</strong></th>
+											<th colspan="1" style="text-align: center"><strong>HPMDubbing</strong></th>
+											<th colspan="1" style="text-align: center"><strong>Speaker2Dub</strong></th>
+											<th colspan="1" style="text-align: center"><strong>StyleDubber</strong></th>
+											<th colspan="1" style="text-align: center"><strong style="color: #1d5da4;">EmoDubber </strong></th>
+											</tr>
+									
+											<td style="align: center; vertical-align: middle;" ><video src="./video/video_Chem/Chem_2/GT.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_2/FS2.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_2/Zero-Shot.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_2/HPMDub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_2/Speaker2Dub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_2/StyleDubber.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_Chem/Chem_2/Ours.mp4" controls="" preload="" width="215"></video></td>
+
+										</tr>
+									</tbody>
+								
+								</table>
+
+
+								<!-- GRID 3 -->
+								<table id="table_4">
+									<thead>
+										<colgroup>
+										   <col width=20%></col>
+										   <col width=20%></col>
+								
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   
+										</colgroup>
+										<tr>
+											<td colspan="7" style="text-align: center;">
+												<span style="font-weight: bold; font-size: 1.2em;" >Sample GRID (Full Video)</span> 
+								
+											</td>
+										</tr>	
+
+									<tbody>
+								
+
+									</tbody>
+									<tbody>
+										<tr>
+											<tr>
+												<td colspan="7" style="text-align: left;">
+													
+													<span style="color:rgb(146, 208, 80);">Text Content:</span> lay blue with d seven now
+
+
+
+													
+												</td>										
+											</tr>
+
+											</tr>
+											<th colspan="1" style="text-align: center"><strong>Ground-Truth</strong></th>
+											<th colspan="1" style="text-align: center"><strong>Zero-shot TTS</strong></th>
+											<th colspan="1" style="text-align: center"><strong>V2C-Net</strong></th>
+											<th colspan="1" style="text-align: center"><strong>HPMDubbing</strong></th>
+											<th colspan="1" style="text-align: center"><strong>Speaker2Dub</strong></th>
+											<th colspan="1" style="text-align: center"><strong>StyleDubber</strong></th>
+											<th colspan="1" style="text-align: center"><strong style="color: #1d5da4;">EmoDubber </strong></th>
+											</tr>
+									
+											<td style="align: center; vertical-align: middle;" ><video src="./video/video_GRID/GRID_3/GT.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_3/V2C.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_3/Zero-Shot.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_3/HPMDub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_3/Speaker2Dub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_3/StyleDubber.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_3/Ours.mp4" controls="" preload="" width="215"></video></td>
+
+										</tr>
+									</tbody>
+								
+								</table>
+				
+
+								<!-- GRID 4 -->
+								<table id="table_4">
+									<thead>
+										<colgroup>
+										   <col width=20%></col>
+										   <col width=20%></col>
+								
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   
+										</colgroup>
+										<tr>
+											<td colspan="7" style="text-align: center;">
+												<span style="font-weight: bold; font-size: 1.2em;" >Sample GRID (Full Video)</span> 
+								
+											</td>
+										</tr>	
+
+									<tbody>
+								
+
+									</tbody>
+									<tbody>
+										<tr>
+											<tr>
+												<td colspan="7" style="text-align: left;">
+													
+													<span style="color:rgb(146, 208, 80);">Text Content:</span> set white by i six please
+
+
+
+													
+												</td>										
+											</tr>
+
+											</tr>
+											<th colspan="1" style="text-align: center"><strong>Ground-Truth</strong></th>
+											<th colspan="1" style="text-align: center"><strong>Zero-shot TTS</strong></th>
+											<th colspan="1" style="text-align: center"><strong>V2C-Net</strong></th>
+											<th colspan="1" style="text-align: center"><strong>HPMDubbing</strong></th>
+											<th colspan="1" style="text-align: center"><strong>Speaker2Dub</strong></th>
+											<th colspan="1" style="text-align: center"><strong>StyleDubber</strong></th>
+											<th colspan="1" style="text-align: center"><strong style="color: #1d5da4;">EmoDubber </strong></th>
+											</tr>
+									
+											<td style="align: center; vertical-align: middle;" ><video src="./video/video_GRID/GRID_4/GT.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_4/V2C.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_4/Zero-Shot.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_4/HPMDub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_4/Speaker2Dub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_4/StyleDubber.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_4/Ours.mp4" controls="" preload="" width="215"></video></td>
+
+										</tr>
+									</tbody>
+								
+								</table>
+				
+
+								<!-- GRID 1 -->
+								<table id="table_4">
+									<thead>
+										<colgroup>
+										   <col width=20%></col>
+										   <col width=20%></col>
+								
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   
+										</colgroup>
+										<tr>
+											<td colspan="7" style="text-align: center;">
+												<span style="font-weight: bold; font-size: 1.2em;" >Sample GRID (Full Video)</span> 
+								
+											</td>
+										</tr>	
+
+									<tbody>
+								
+
+									</tbody>
+									<tbody>
+										<tr>
+											<tr>
+												<td colspan="7" style="text-align: left;">
+													
+													<span style="color:rgb(146, 208, 80);">Text Content:</span> place red at g eight soon
+
+													
+												</td>										
+											</tr>
+
+											</tr>
+											<th colspan="1" style="text-align: center"><strong>Ground-Truth</strong></th>
+											<th colspan="1" style="text-align: center"><strong>Zero-shot TTS</strong></th>
+											<th colspan="1" style="text-align: center"><strong>V2C-Net</strong></th>
+											<th colspan="1" style="text-align: center"><strong>HPMDubbing</strong></th>
+											<th colspan="1" style="text-align: center"><strong>Speaker2Dub</strong></th>
+											<th colspan="1" style="text-align: center"><strong>StyleDubber</strong></th>
+											<th colspan="1" style="text-align: center"><strong style="color: #1d5da4;">EmoDubber </strong></th>
+											</tr>
+									
+											<td style="align: center; vertical-align: middle;" ><video src="./video/video_GRID/GRID_1/GT.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_1/V2C.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_1/Zero-Shot.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_1/HPMDub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_1/Speaker2Dub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_1/StyleDubber.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_1/Ours.mp4" controls="" preload="" width="215"></video></td>
+
+										</tr>
+									</tbody>
+								
+								</table>
+				
+								
+								<!-- GRID 2 -->
+								<table id="table_4">
+									<thead>
+										<colgroup>
+										   <col width=20%></col>
+										   <col width=20%></col>
+								
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   
+										</colgroup>
+										<tr>
+											<td colspan="7" style="text-align: center;">
+												<span style="font-weight: bold; font-size: 1.2em;" >Sample GRID (Full Video)</span> 
+								
+											</td>
+										</tr>	
+
+									<tbody>
+								
+
+									</tbody>
+									<tbody>
+										<tr>
+											<tr>
+												<td colspan="7" style="text-align: left;">
+													
+													<span style="color:rgb(146, 208, 80);">Text Content:</span> lay blue by t eight now
+
+
+													
+												</td>										
+											</tr>
+
+											</tr>
+											<th colspan="1" style="text-align: center"><strong>Ground-Truth</strong></th>
+											<th colspan="1" style="text-align: center"><strong>Zero-shot TTS</strong></th>
+											<th colspan="1" style="text-align: center"><strong>V2C-Net</strong></th>
+											<th colspan="1" style="text-align: center"><strong>HPMDubbing</strong></th>
+											<th colspan="1" style="text-align: center"><strong>Speaker2Dub</strong></th>
+											<th colspan="1" style="text-align: center"><strong>StyleDubber</strong></th>
+											<th colspan="1" style="text-align: center"><strong style="color: #1d5da4;">EmoDubber </strong></th>
+											</tr>
+									
+											<td style="align: center; vertical-align: middle;" ><video src="./video/video_GRID/GRID_2/GT.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_2/V2C.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_2/Zero-Shot.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_2/HPMDub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_2/Speaker2Dub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_2/StyleDubber.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_GRID/GRID_2/Ours.mp4" controls="" preload="" width="215"></video></td>
+
+										</tr>
+									</tbody>
+								
+								</table>
+				
+
+
+								<!-- V2C 2 -->
+								<table id="table_4">
+									<thead>
+										<colgroup>
+										   <col width=20%></col>
+										   <col width=20%></col>
+								
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   
+										</colgroup>
+										<tr>
+											<td colspan="7" style="text-align: center;">
+												<span style="font-weight: bold; font-size: 1.2em;" >Sample V2C-Animation (Full Video)</span> 
+								
+											</td>
+										</tr>	
+
+									<tbody>
+								
+
+									</tbody>
+									<tbody>
+										<tr>
+											<tr>
+												<td colspan="7" style="text-align: left;">
+													
+													<span style="color:rgb(146, 208, 80);">Text Content:</span> now what?
+
+
+
+													
+												</td>										
+											</tr>
+
+											</tr>
+											<th colspan="1" style="text-align: center"><strong>Ground-Truth</strong></th>
+											<th colspan="1" style="text-align: center"><strong>Zero-shot TTS</strong></th>
+											<th colspan="1" style="text-align: center"><strong>V2C-Net</strong></th>
+											<th colspan="1" style="text-align: center"><strong>HPMDubbing</strong></th>
+											<th colspan="1" style="text-align: center"><strong>Speaker2Dub</strong></th>
+											<th colspan="1" style="text-align: center"><strong>StyleDubber</strong></th>
+											<th colspan="1" style="text-align: center"><strong style="color: #1d5da4;">EmoDubber </strong></th>
+											</tr>
+									
+											<td style="align: center; vertical-align: middle;" ><video src="./video/video_V2C/V2C_2/GT.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_V2C/V2C_2/V2C.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_V2C/V2C_2/Zero-Shot.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_V2C/V2C_2/HPMDub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_V2C/V2C_2/Speaker2Dub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_V2C/V2C_2/StyleDubber.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_V2C/V2C_2/Ours.mp4" controls="" preload="" width="215"></video></td>
+
+										</tr>
+									</tbody>
+								
+								</table>
+				
+
+
+
+								<!-- V2C 1 -->
+								<table id="table_4">
+									<thead>
+										<colgroup>
+										   <col width=20%></col>
+										   <col width=20%></col>
+								
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   
+										</colgroup>
+										<tr>
+											<td colspan="7" style="text-align: center;">
+												<span style="font-weight: bold; font-size: 1.2em;" >Sample V2C-Animation (Full Video)</span> 
+								
+											</td>
+										</tr>	
+
+									<tbody>
+								
+
+									</tbody>
+									<tbody>
+										<tr>
+											<tr>
+												<td colspan="7" style="text-align: left;">
+													
+													<span style="color:rgb(146, 208, 80);">Text Content:</span> mom! dad!
+
+
+
+													
+												</td>										
+											</tr>
+
+											</tr>
+											<th colspan="1" style="text-align: center"><strong>Ground-Truth</strong></th>
+											<th colspan="1" style="text-align: center"><strong>Zero-shot TTS</strong></th>
+											<th colspan="1" style="text-align: center"><strong>V2C-Net</strong></th>
+											<th colspan="1" style="text-align: center"><strong>HPMDubbing</strong></th>
+											<th colspan="1" style="text-align: center"><strong>Speaker2Dub</strong></th>
+											<th colspan="1" style="text-align: center"><strong>StyleDubber</strong></th>
+											<th colspan="1" style="text-align: center"><strong style="color: #1d5da4;">EmoDubber </strong></th>
+											</tr>
+									
+											<td style="align: center; vertical-align: middle;" ><video src="./video/video_V2C/V2C_1/GT.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_V2C/V2C_1/V2C.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_V2C/V2C_1/Zero-Shot.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_V2C/V2C_1/HPMDub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_V2C/V2C_1/Speaker2Dub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_V2C/V2C_1/StyleDubber.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_V2C/V2C_1/Ours.mp4" controls="" preload="" width="215"></video></td>
+
+										</tr>
+									</tbody>
+								
+								</table>
+				
+
+
+								<!-- V2C 3 -->
+								<table id="table_4">
+									<thead>
+										<colgroup>
+										   <col width=20%></col>
+										   <col width=20%></col>
+								
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   <col width=20%></col>
+										   
+										</colgroup>
+										<tr>
+											<td colspan="7" style="text-align: center;">
+												<span style="font-weight: bold; font-size: 1.2em;" >Sample V2C-Animation (Full Video)</span> 
+								
+											</td>
+										</tr>	
+
+									<tbody>
+								
+
+									</tbody>
+									<tbody>
+										<tr>
+											<tr>
+												<td colspan="7" style="text-align: left;">
+													
+													<span style="color:rgb(146, 208, 80);">Text Content:</span> I win! Ha!
+
+
+
+													
+												</td>										
+											</tr>
+
+											</tr>
+											<th colspan="1" style="text-align: center"><strong>Ground-Truth</strong></th>
+											<th colspan="1" style="text-align: center"><strong>Zero-shot TTS</strong></th>
+											<th colspan="1" style="text-align: center"><strong>V2C-Net</strong></th>
+											<th colspan="1" style="text-align: center"><strong>HPMDubbing</strong></th>
+											<th colspan="1" style="text-align: center"><strong>Speaker2Dub</strong></th>
+											<th colspan="1" style="text-align: center"><strong>StyleDubber</strong></th>
+											<th colspan="1" style="text-align: center"><strong style="color: #1d5da4;">EmoDubber </strong></th>
+											</tr>
+									
+											<td style="align: center; vertical-align: middle;" ><video src="./video/video_V2C/V2C_3/GT.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_V2C/V2C_3/V2C.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_V2C/V2C_3/Zero-Shot.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_V2C/V2C_3/HPMDub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_V2C/V2C_3/Speaker2Dub.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_V2C/V2C_3/StyleDubber.mp4" controls="" preload="" width="215"></video></td>
+											<td style="text-align: center"><video src="./video/video_V2C/V2C_3/Ours.mp4" controls="" preload="" width="215"></video></td>
+
+										</tr>
+									</tbody>
+								
+								</table>
+	
+
+							</div>
+						</div>
+					</div>		
+			    </div>
+
+			<div class="section">
+				<div class="section-title">Emotion Controlling (Chem)</div>
+				<div class="section-content model">
+					<img src="./img/intensity_ratio_chem.png" alt="" class="model-img">
+					
+					<p style="padding-top: 1rem; color: #a1a1a1; font-size: 1rem; text-align: center;">Figure 2: Intensity performance of EmoDubber on Chem. The horizontal axis shows the positive guidance α, and vertical axis displays the Intensity Score (IS), with different curves for various negative guidance β. Higher IS indicate stronger emotional intensity in audio. </p>
+				</div>
+			</div>
+
+			<div class="section">
+				<div class="section-title">Emotion Controlling (GRID)</div>
+				<div class="section-content model">
+					<img src="./img/intensity_ratio_grid.png" alt="" class="model-img">
+					
+					<p style="padding-top: 1rem; color: #a1a1a1; font-size: 1rem; text-align: center;">Figure 3: Intensity performance of EmoDubber on GRID. The horizontal axis shows the positive guidance α, and vertical axis displays the Intensity Score (IS), with different curves for various negative guidance β. Higher IS indicate stronger emotional intensity in audio. </p>
+				</div>
+			</div>
+
+			<div class="section">
+				<div class="section-title">Emotion Controlling (V2C-Animation)</div>
+				<div class="section-content model">
+					<img src="./img/intensity_ratio_v2c.png" alt="" class="model-img">
+					
+					<p style="padding-top: 1rem; color: #a1a1a1; font-size: 1rem; text-align: center;">Figure 4: Intensity performance of EmoDubber on V2C-Animation. The horizontal axis shows the positive guidance α, and vertical axis displays the Intensity Score (IS), with different curves for various negative guidance β. Higher IS indicate stronger emotional intensity in audio. </p>
+				</div>
+			</div>
+
+
+			<div class="section">
+				<div class="section-title"> Recreate audio with desired emotions based on the user’s instructions  </div>
+
+				<!-- emotion wav 1 -->
+				<table border="1" style="width: 75%; text-align: right; margin: 0 auto;"> <!-- 添加 margin: 0 auto; -->
+					<tr>
+						<th>Chem</th>
+						<td>
+							<table style="width: 100%; margin: 0 auto;">
+								<tr>
+									<td>w/o FUEC</td>
+									<td>
+										<audio controls style="width: 450px;">
+											<source src="./video/Emo_example/Chem/ours_AGZZGR5Otxw-004.wav" type="audio/wav">
+										</audio>
+									</td>
+								</tr>
+								<tr>
+									<td>w FUEC (E = {surprise,  2.1,  0.6} by user)</td>
+									<td>
+										<audio controls style="width: 450px;">
+											<source src="./video/Emo_example/Chem/ours_AGZZGR5Otxw-004-surprise.wav" type="audio/wav">
+										</audio>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+
+				<!-- emotion wav 2 -->
+				<table border="1" style="width: 75%; text-align: right; margin: 0 auto;">
+					<tr>
+						<th>GRID </th>
+						<td>
+							<table style="width: 100%; margin: 0 auto;">
+								<tr>
+									<td>w/o FUEC</td>
+									<td>
+										<audio controls style="width: 450px;">
+											<source src="./video/Emo_example/GRID/ours_s12-swim9n.wav" type="audio/wav">
+										</audio>
+									</td>
+								</tr>
+								<tr>
+									<td>w FUEC (E = {sad,  0.3,  1.7} by user)</td>
+									<td>
+										<audio controls style="width: 450px;">
+											<source src="./video/Emo_example/GRID/oursad_s12-swim9n.wav" type="audio/wav">
+										</audio>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+
+			<div class="section">
+				<div class="section-title"> Intensity Controlling (increase α or decrease β) </div>
+
+				<!-- emotion wav 1 -->
+				<table border="1" style="width: 75%; text-align: right; margin: 0 auto;">
+					<tr>
+						<th>V2C </th>
+						<td>
+							<table style="width: 100%; margin: 0 auto;">
+								<tr>
+									<td>w FUEC (E = {angry,  0.4  0.1} by user)</td>
+									<td>
+										<audio controls style="width: 450px;">
+											<source src="./video/Emo_example/V2C/OurL1_Bossbaby@BossBaby-Bossbaby@BossBaby_00_0213_00.wav" type="audio/wav">
+										</audio>
+									</td>
+								</tr>
+								<tr>
+									<td>w FUEC (E = {angry,  3.5,  0.9} by user)</td>
+									<td>
+										<audio controls style="width: 450px;">
+											<source src="./video/Emo_example/V2C/OurL2_Bossbaby@BossBaby-Bossbaby@BossBaby_00_0213_00.wav" type="audio/wav">
+										</audio>
+									</td>
+								</tr>
+								<tr>
+									<td>w FUEC (E = {angry,  6.7, 1.8} by user)</td>
+									<td>
+										<audio controls style="width: 450px;">
+											<source src="./video/Emo_example/V2C/OurL3_Bossbaby@BossBaby-Bossbaby@BossBaby_00_0213_00.wav" type="audio/wav">
+										</audio>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+
+				<!-- emotion wav 2
+				<table border="1" style="width: 100%; text-align: left;">
+					<tr>
+						<th>GRID (sad)</th>
+						<td>
+							<table style="width: 100%;">
+								<tr>
+									<td>w/o FUEC</td>
+									<td>
+										<audio controls style="width: 450px;">
+											<source src="./video/Emo_example/GRID/ours_s12-swim9n.wav" type="audio/wav">
+										</audio>
+									</td>
+								</tr>
+								<tr>
+									<td>w FUEC (E = {2,  0.3,  1.7})</td>
+									<td>
+										<audio controls style="width: 450px;">
+											<source src="./video/Emo_example/GRID/oursad_s12-swim9n.wav" type="audio/wav">
+										</audio>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table> -->
+			</div>
+
+
+			<div class="section">
+				<div class="section-title">Emotion Visualizations on the mel-spectrograms level</div>
+				<div class="section-content model" style="text-align: center;">
+					<!-- <img src="./img/Visual_SM_2-1.png" alt="" class="model-img"> -->
+					<img src="./img/Visual_SM_2-1.png" alt="" class="model-img" style="width: 60%; height: auto;">
+					<!-- <img src="./img/Visual_SM_1-1.png" alt="" class="model-img"> -->
+					
+					<p style="padding-top: 1rem; color: #a1a1a1; font-size: 1rem; text-align: center;">Figure 5: The proposed Emodubber can achieve high-quality audio-visual alignment and clear pronunciation (top part of the figure), recreate audio with desired emotions based on the user’s instructions (middle part of figure), and control the emotional intensity that allows users to make more fine-grained edits to sentiment (bottom part). </p>
+				</div>
+			</div>
+
+
+			<div class="section">
+				<div class="section-title">More Audio-Visual Visualizations </div>
+				<div class="section-content model" style="text-align: center;">
+					<img src="./img/Visual_SM_1-1.png" alt="" class="model-img" style="width: 60%; height: auto;">
+					<!-- <img src="./img/Visual_SM_1-1.png" alt="" class="model-img"> -->
+					<!-- <img src="./img/Visual_SM_1-1.png" alt="" class="model-img"> -->
+					
+					<p style="padding-top: 1rem; color: #a1a1a1; font-size: 1rem; text-align: center;">Figure 6: The ``green check marks'' represent the correct audio-visual synchronization consistent with the ground truth mel-spectrogram, while the ``gray crosses'' represent failure examples that misalign with ground truth. 
+						Through the observation of the highlight regions, it is evident that our model outperforms other SOTA dubbing methods in maintaining audio-visual alignment, which is notably closer to ground truth dubbing. 
+						For instance, our method can capture the natural pauses in the speaker's speech (see Chem Benchmark VzvinAckmQU-022 and 7W0cz0oGHGE-005), and our method can reason the correct starting and ending points of speakers in GRID Benchmark (s24-bbbj9p and s26-sgbg7p), which are significant to maintain audio-visual alignment. 
+						In contrast, other advanced dubbing methods cannot achieve this. </p>
+				</div>
+			</div>
+
+
+			</div>
+				<hr />
+			</div>
+				<!-- </div> -->
+			<!-- </div> -->
+		</div>
+		
+		
+	</body>
+</html>
